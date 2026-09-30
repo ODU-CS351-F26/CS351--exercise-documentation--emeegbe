@@ -33,11 +33,13 @@ application { //Allows  ./gradlew run --args=path-to-test-data
 }
 
 task reports(dependsOn: [javadoc, build]) {
-    copy {
-        from 'src/main/html'
-        into 'build/reports'
-	from 'build/docs'
-	into 'build/reports'
+    doLast{
+        copy {
+            from 'src/main/html'
+            into 'build/reports'
+	    from 'build/docs'
+	    into 'build/reports'
+        }
     }
 }
 
