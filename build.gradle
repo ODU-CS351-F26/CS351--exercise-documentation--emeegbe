@@ -32,3 +32,25 @@ application { //Allows  ./gradlew run --args=path-to-test-data
     mainClass = 'edu.odu.cs.MostCommonWords'
 }
 
+task reports(dependsOn: [javadoc, build]) {
+    copy {
+        from 'src/main/html'
+        into 'build/reports'
+	from 'build/docs'
+	into 'build/reports'
+    }
+}
+
+task deployReports(dependsOn: reports) {
+                                  
+    gitPublish {
+    
+        repoUri = 'git@github.com:ODU-CS351-F26/CS351--exercise-documentation--emeegbe.git'
+
+        branch = 'gh-pages'
+  
+        contents {
+            from 'build/reports'                                   
+        }
+    }
+}
