@@ -1,0 +1,58 @@
+plugins {
+   id 'java'
+   id 'application'
+   id 'org.ajoberstar.git-publish' version '4.2.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+java {
+    sourceCompatibility = JavaVersion.toVersion(11)
+    targetCompatibility = JavaVersion.toVersion(11)
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testImplementation 'org.hamcrest:hamcrest-library:2.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+    ignoreFailures = true
+    testLogging {
+        events "passed", "skipped", "failed"
+        }
+}
+
+application { //Allows  ./gradlew run --args=path-to-test-data
+    mainClass = 'edu.odu.cs.MostCommonWords'
+}
+
+task reports(dependsOn: [javadoc, build]) {
+    doLast{
+        copy {
+            from 'src/main/html'
+            into 'build/reports'
+	    from 'build/docs'
+	    into 'build/reports'
+        }
+    }
+}
+
+task deployReports(dependsOn: reports) {
+                                  
+    gitPublish {
+    
+        repoUri = 'git@github.com:ODU-CS351-F26/CS351--exercise-documentation--emeegbe.git'
+
+        branch = 'gh-pages'
+  
+        contents {
+            from 'build/reports'                                   
+        }
+    }
+}
